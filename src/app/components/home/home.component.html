@@ -1,0 +1,91 @@
+<div class="flex justify-center gap-4 mt-10 overflow-x-auto">
+  <button
+    *ngFor="let category of categories()"
+    (click)="getByCategory(category)"
+    class="px-4 py-2 border rounded-lg transition duration-300 ease-in-out transform hover:scale-105"
+    [ngClass]="{
+      'bg-gray-700 text-white': selectedCategory() === category,
+      'bg-gray-100 text-gray-800 hover:bg-gray-300':
+        selectedCategory() !== category
+    }"
+  >
+    {{ category }}
+  </button>
+</div>
+
+<div
+  class="grid grid-cols-1 mt-6 sm:grid-cols-2 p-8 md:grid-cols-3 lg:grid-cols-4 gap-6"
+>
+  <div
+    *ngFor="let product of paginatedProducts"
+    class="border border-gray-300 rounded-lg shadow-lg bg-white overflow-hidden flex flex-col justify-between h-full transition-transform duration-300 ease-in-out transform hover:scale-105 hover:shadow-2xl"
+  >
+    <a
+      routerLink="/product/{{ product.id }}"
+      class="w-full flex justify-center items-center p-4 cursor-pointer"
+    >
+      <img
+        [src]="product.image"
+        [alt]="product.title"
+        class="h-40 object-contain transition-transform duration-300 hover:scale-110"
+      />
+    </a>
+
+    <a
+      routerLink="/product/{{ product.id }}"
+      class="p-4 flex-grow cursor-pointer"
+    >
+      <h2 class="text-lg font-semibold text-gray-800 min-h-[60px] line-clamp-1">
+        {{ product.title }}
+      </h2>
+      <p class="text-gray-600 text-sm mt-1 line-clamp-2">
+        {{ product.description }}
+      </p>
+      <p class="text-gray-800 font-bold mt-2">${{ product.price }}</p>
+      <p class="text-gray-500 text-sm">Category: {{ product.category }}</p>
+
+      <div class="flex items-center gap-2 mt-2 text-yellow-500">
+        ⭐ {{ product.rating.rate }}
+        <span class="text-gray-500">/ {{ product.rating.count }} reviews</span>
+      </div>
+    </a>
+
+    <button
+      (click)="addToCart(product)"
+      class="w-full bg-blue-600 text-white py-2 px-4 text-center hover:bg-blue-700 transition-transform duration-300 hover:scale-105"
+    >
+      Add to Cart
+    </button>
+  </div>
+</div>
+
+<div
+  *ngIf="paginatedProducts.length"
+  class="flex justify-center mt-8 pb-10 gap-4 items-center"
+>
+  <button
+    (click)="prevPage()"
+    [disabled]="currentPage === 1"
+    class="px-5 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:bg-blue-700 hover:scale-105 active:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:scale-100"
+  >
+    ⬅
+  </button>
+
+  <span
+    class="px-4 py-2 text-lg font-bold text-blue-700 bg-gray-100 border border-blue-500 rounded-lg shadow-sm"
+  >
+    {{ currentPage }}
+  </span>
+
+  <button
+    (click)="nextPage()"
+    [disabled]="currentPage * itemsPerPage >= productsList().length"
+    class="px-5 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md transition-all duration-300 ease-in-out hover:bg-blue-700 hover:scale-105 active:scale-100 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:scale-100"
+  >
+    ➡
+  </button>
+</div>
+
+<div *ngIf="paginatedProducts.length === 0" class="text-center py-10">
+  <p class="text-gray-500 text-lg animate-pulse">No products found...</p>
+</div>
